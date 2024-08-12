@@ -1,5 +1,5 @@
 <template>
-  <el-card style="max-width: 480px" id="card">
+  <el-card style="max-width: 480px">
     <template #header>
       <div class="card-header">
         <span
@@ -10,8 +10,11 @@
     <p>Ganadores: {{ winners }}</p>
     <p>Sistema de votación: {{ votingSystem }}</p>
     <template #footer
-      ><a :href="`/vote/${votingSystem}?id=${identifier}&name=${name}`"
-        ><el-button type="primary">Votar</el-button></a
+      ><el-button
+        type="info"
+        tag="a"
+        :href="`/publish?id={${id}}&name=${name}&winners=${winners}&votingSystem=${votingSystem}`"
+        >Informe</el-button
       ></template
     >
   </el-card>
@@ -22,12 +25,12 @@ import "../assets/css/mains.css";
 import "../assets/css/header.css";
 import "../assets/css/votes.css";
 export default {
-  name: "VotingCard",
+  name: "VotingDraftCard",
   props: {
+    identifier: String,
     name: String,
     winners: String,
     votingSystem: String,
-    identifier: String,
   },
 };
 </script>
@@ -35,17 +38,12 @@ export default {
 <style scoped>
 #card {
   text-align: center;
-  background-color: darkgrey;
+  background-color: slategrey;
   border: 1px solid black;
 }
 
 h1 {
   font-size: calc(0.75em + 1vmin);
   font-weight: bold;
-}
-
-#footer {
-  display: flex;
-  justify-content: center;
 }
 </style>
