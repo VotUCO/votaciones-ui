@@ -1,24 +1,32 @@
 <template>
   <div id="container">
-    <h3>Votaciones Privadas ({{ votaciones.length }})</h3>
+    <div class="container-title">
+      <h3>Votaciones en Borrador ({{ votaciones.length }})</h3>
+    </div>
     <hr />
-    <li v-for="votacion in votaciones" :key="votacion.id" id="votes-list">
-      <VotingCard
-        :name="votacion.name"
-        :winners="votacion.winners"
-        :votingSystem="votacion.voting_system"
-        :identifier="votacion.id"
-        class="card"
-      />
+    <li v-for="votacion in votaciones" :key="votacion.id">
+      <ul>
+        <VotingDraftCard
+          :identifier="votacion.id"
+          :name="votacion.name"
+          :winners="votacion.winners"
+          :votingSystem="votacion.voting_system"
+          id="card"
+        />
+      </ul>
     </li>
   </div>
 </template>
 
 <script>
-import VotingCard from "./VotingCard.vue";
+import "../assets/css/mains.css";
+import "../assets/css/header.css";
+import "../assets/css/votes.css";
 import axios from "axios";
+import VotingDraftCard from "./VotingDraftCard.vue";
+
 export default {
-  name: "PrivateVotes",
+  name: "DraftVotes",
   async setup() {
     const number = 0;
     let votaciones = [];
@@ -29,7 +37,7 @@ export default {
 
     try {
       const response = await axios.get(
-        `${process.env.VUE_APP_BACK_URL}/api/v1/voting/private`,
+        `${process.env.VUE_APP_BACK_URL}/api/v1/voting/draft`,
         {
           headers: {
             // eslint-disable-next-line no-undef
@@ -46,10 +54,9 @@ export default {
         }
       }
     }
-    console.log(votaciones);
     return { number, votaciones };
   },
-  components: { VotingCard },
+  components: { VotingDraftCard },
 };
 </script>
 
@@ -73,12 +80,10 @@ li {
 #card {
   width: fit-content;
   height: fit-content;
-  background-color: bisque;
 }
 
-#container {
-  margin-top: 2vw;
-  text-align: center;
+.container-title {
+  margin: 15px;
 }
 
 @media (max-width: 700px) {

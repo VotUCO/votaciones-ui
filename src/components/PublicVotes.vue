@@ -3,12 +3,15 @@
     <h3>Votaciones Públicas ({{ votaciones.length }})</h3>
     <hr />
     <li v-for="votacion in votaciones" :key="votacion.id">
-      <VotingCard
-        :name="votacion.name"
-        :type="votacion.type"
-        :votingSystem="votacion.votingSystem"
-        id="card"
-      />
+      <ul>
+        <VotingCard
+          :name="votacion.name"
+          :winners="votacion.winners"
+          :votingSystem="votacion.voting_system"
+          id="card"
+          :identifier="votacion.id"
+        />
+      </ul>
     </li>
   </div>
 </template>
@@ -24,27 +27,73 @@ export default {
   name: "PublicVotes",
   async setup() {
     const number = 0;
+    let votaciones = [];
 
     function accessToken() {
-      console.log(localStorage.getItem("accessToken"));
       return localStorage.getItem("accessToken");
     }
 
-    const response = await axios.get(
-      `${process.env.VUE_APP_BACK_URL}/api/v1/voting/public`,
-      {
-        headers: {
-          // eslint-disable-next-line no-undef
-          Authorization: `Bearer ${accessToken()}`,
-        },
+    try {
+      const response = await axios.get(
+        `${process.env.VUE_APP_BACK_URL}/api/v1/voting/public`,
+        {
+          headers: {
+            // eslint-disable-next-line no-undef
+            Authorization: `Bearer ${accessToken()}`,
+          },
+        }
+      );
+      votaciones = response.data;
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status == 401) {
+          localStorage.setItem("accessToken", null);
+          window.location.reload();
+        }
       }
-    );
-
-    const votaciones = response.data;
+    }
     return { number, votaciones };
   },
   components: { VotingCard },
 };
 </script>
 
-<style></style>
+<style scoped>
+h3 {
+  font-size: xx-large;
+  padding: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  display: inline-block;
+  margin: 3%;
+}
+
+#card {
+  width: fit-content;
+  height: fit-content;
+  background-color: aliceblue;
+}
+
+#container {
+  margin-top: 2vw;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  h3 {
+    font-size: large;
+  }
+
+  li {
+    display: inline-block;
+    margin: 5%;
+  }
+}
+</style>
