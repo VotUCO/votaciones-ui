@@ -1,70 +1,73 @@
 <template>
-  <div>
-    <div id="header">
-      <a href="/" target="_self">
-        <img
-          src="../assets/logo.png"
-          id="logo"
-          alt="Logo de la Aplicación VotUCO"
-        />
-      </a>
-      <div class="topnav">
-        <span><a class="active" href="/about">¿Qué es?</a></span>
-        <span><a href="/how-works">¿Cómo funciona?</a></span>
-        <span
-          ><SigninButton v-if="!isLogged()" id="signin-header-button"
-        /></span>
-        <span v-if="isLogged()">
-          ¡Bienvenid@, {{ nombre }}!<img
-            src="../assets/personicon.png"
-            id="personlogo"
-          />
-        </span>
-      </div>
-      <!-- <span class="nav-menu">
-        <ul class="button-menu">
-          <li>
-            <button class="unmarked-button">¿Qué es?</button>
-          </li>
-          <li>
-            <button class="unmarked-button">¿Cómo funciona?</button>
-          </li>
-          <div class="login-info">
-            <li><SigninButton v-if="isLogged()" /></li>
-            <li class="info-text" v-if="!isLogged()">
-              ¡Bienvenid@, {{ nombre }}!<img
-                src="../assets/personicon.png"
-                id="personlogo"
-              />
-            </li>
-          </div>
-        </ul>
-      </span> -->
-    </div>
-  </div>
+  <el-menu
+    :default-active="activeIndex"
+    class="el-menu-demo"
+    mode="horizontal"
+    :ellipsis="false"
+    background-color="#ddd7d7"
+  >
+    <el-menu-item index="0">
+      <a href="/"
+        ><img style="width: 60px" src="@/assets/logo.png" alt="Element logo"
+      /></a>
+    </el-menu-item>
+    <el-sub-menu index="1" v-if="logged != 'null'">
+      <template #title>Votaciones</template>
+      <a href="/vote/checker"><el-menu-item index="1-1">Voto</el-menu-item></a>
+      <a href="/voting/checker"
+        ><el-menu-item index="1-2">Resultados Votación</el-menu-item></a
+      >
+    </el-sub-menu>
+    <el-sub-menu index="2">
+      <template #title>Sobre VotUCO</template>
+      <el-menu-item index="2-1">¿Qué es?</el-menu-item>
+      <el-menu-item index="2-2">¿Cómo funciona?</el-menu-item>
+    </el-sub-menu>
+    <el-menu-item index="3">
+      <el-button
+        type="primary"
+        v-on:click="this.$router.push('/login')"
+        v-if="logged == 'null'"
+        plain
+        >Iniciar Sesión</el-button
+      >
+      <el-button
+        type="primary"
+        v-on:click="closeSession()"
+        v-if="logged != 'null'"
+        plain
+        >Cerrar Sesión</el-button
+      >
+    </el-menu-item>
+  </el-menu>
 </template>
-
 <script>
-import SigninButton from "./SinginButton.vue";
-
-import "../assets/css/header.css";
+import { ref } from "vue";
 export default {
   name: "HeaderBar",
-  components: {
-    SigninButton,
-  },
   setup() {
-    function isLogged() {
-      return localStorage.getItem("accessToken") != "null";
+    const logged = ref(localStorage.getItem("accessToken"));
+    function name() {
+      return localStorage.getItem("name");
+    }
+    function closeSession() {
+      localStorage.setItem("accessToken", "null");
+      window.location.reload();
     }
     return {
-      isLogged,
+      logged,
+      closeSession,
+      name,
     };
   },
 };
 </script>
 
 <style scoped>
+.el-menu--horizontal > .el-menu-item:nth-child(1) {
+  margin-right: auto;
+}
+
 img {
   display: inline;
 }
@@ -111,6 +114,10 @@ img {
   display: inline;
 }
 
+#personlogo {
+  width: 5%;
+}
+
 @media (max-width: 700px) {
   .topnav span {
     font-size: 80%;
@@ -126,6 +133,10 @@ img {
 
   .topnav span {
     padding: 5px 6px;
+  }
+
+  #name-span {
+    display: none;
   }
 }
 </style>
