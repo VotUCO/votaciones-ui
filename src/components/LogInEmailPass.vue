@@ -1,52 +1,77 @@
 <template>
-  <form @submit.prevent="sendData">
-    <div id="login-box">
-      <div id="input-container">
-        <label for="email">Email:</label>
-        <input type="text" class="input-login" id="email" v-model="email" />
-      </div>
-      <div id="input-container">
-        <label for="password">Contraseña:</label>
-        <input
-          type="password"
-          class="input-login"
-          id="password"
-          v-model="password"
-        />
-      </div>
-      <div v-if="this.error">
-        <p class="error-message">La identificación no fue exitosa</p>
-      </div>
-      <div id="access-button">
-        <AccessButton type="submit" />
-      </div>
+  <el-form
+    style="max-width: 600px"
+    :model="dynamicValidateForm"
+    label-width="auto"
+    class=""
+  >
+    <el-form-item
+      prop="email"
+      label="Email"
+      :rules="[
+        {
+          required: true,
+          message: 'Por favor, ingrese su email',
+          trigger: 'blur',
+        },
+        {
+          type: 'email',
+          message: 'Por favor, ingrese un email válido',
+          trigger: ['blur', 'change'],
+        },
+      ]"
+    >
+      <el-input v-model="dynamicValidateForm.email" />
+    </el-form-item>
+    <el-form-item
+      prop="password"
+      label="Contraseña"
+      :rules="[
+        {
+          required: true,
+          message: 'Por favor, ingrese su contraseña',
+          trigger: 'blur',
+        },
+      ]"
+    >
+      <el-input v-model="dynamicValidateForm.password" type="password" />
+    </el-form-item>
+    <el-alert
+      title="Acceso Incorrecto"
+      type="error"
+      id="error-modal"
+      style="display: none"
+    />
+    <div id="send-button">
+      <el-form-item>
+        <el-button type="primary" id="login-button" @click="sendData(formRef)"
+          >Acceder</el-button
+        >
+      </el-form-item>
     </div>
-  </form>
+  </el-form>
 </template>
 
 <script>
-import { ref } from "vue";
-import AccessButton from "./AccessButton.vue";
 import axios from "axios";
 import router from "@/router";
+import { reactive } from "vue";
 
 export default {
   name: "LoginEmailPass",
-  components: {
-    AccessButton,
-  },
   setup() {
-    let email = "";
-    let password = "";
-    let error = ref(false);
+    const dynamicValidateForm = reactive({
+      email: "",
+      password: "",
+    });
     async function sendData() {
       const payload = {
-        username: this.email,
-        password: this.password,
+        email: this.dynamicValidateForm.email,
+        password: this.dynamicValidateForm.password,
       };
       try {
         const response = await axios.post(
-          `${process.env.VUE_APP_BACK_URL}/api/v1/user/login/`,
+          `${process.env.VUE_APP_BACK_URL}/api/v1/user/login`,
           payload,
           {
             headers: {
@@ -57,37 +82,33 @@ export default {
         localStorage.setItem("refreshToken", response.data.refresh);
         localStorage.setItem("accessToken", response.data.access);
         localStorage.setItem("logged", true);
+        localStorage.setItem("name", response.data.nombre);
+        localStorage.setItem("rol", response.data.rol);
         router.push("/");
       } catch (error) {
-        this.error = true;
-        console.log(this.error);
+        var errorMessage = document.getElementById("error-modal");
+        errorMessage.style.display = "block";
       }
     }
     return {
-      email,
-      password,
-      error,
+      dynamicValidateForm,
       sendData,
     };
   },
 };
 </script>
 
-<style>
+<style scoped>
 label {
   display: block;
   font-weight: bold;
   text-align: left;
   padding: 5px;
 }
-#login-box {
-  border: 2px solid rgb(54, 54, 191);
-  padding: 10px;
-  margin: 0 auto;
-  margin-top: 5vw;
-  place-items: center;
-  height: 90%;
-  width: 56%;
+#login-button {
+  height: 50px;
+  width: 75px;
+  font-size: 15px;
 }
 .input-login {
   display: block;
@@ -105,8 +126,13 @@ label {
   justify-content: center;
 }
 
-.error-message {
-  color: red;
+#error-modal {
+  margin: 10px;
+}
+
+#send-button {
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 600px) {

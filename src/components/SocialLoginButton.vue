@@ -1,7 +1,11 @@
 <template>
   <div>
-    <button id="social-button" v-on:click="this.$router.push({ link })">
-      <img src="../assets/google.png" id="logo" alt="name" />
+    <button
+      id="social-button"
+      v-on:click="window.location.replace(`${backUrl()}/api/v1/user/google`)"
+    >
+      <img :src="`@/assets/${logo}.png`" id="logo" :alt="logo" />
+      {{ logo }}
       <p id="button-name">{{ name }}</p>
     </button>
   </div>
@@ -23,6 +27,14 @@ export default {
       type: String,
       default: "",
     },
+  },
+  setup() {
+    function backUrl() {
+      return process.env.VUE_APP_BACK_URL;
+    }
+    return {
+      backUrl,
+    };
   },
 };
 </script>

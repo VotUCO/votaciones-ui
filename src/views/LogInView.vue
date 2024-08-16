@@ -1,65 +1,88 @@
 <!-- eslint-disable vue/no-parsing-error -->
 <template>
-  <div id="login-logo">
-    <a href="/"
-      ><img src="@/assets/logo.png" alt="Logo de la aplicación VotUCO"
-    /></a>
-  </div>
-  <LogInEmailPass />
-  <div id="buttons-container">
-    <SocialLoginButton
-      class="social-button"
-      name="Acceder con Google"
-      link="/login/google"
-      logo="@/assets/google.png"
-    />
-    <SocialLoginButton
-      class="social-button"
-      name="Universidad de Córdoba"
-      link="/login/uco"
-      logo="@/assets/uco.png"
-    />
-  </div>
+  <el-space direction="vertical" id="form-container">
+    <div id="login-logo">
+      <a href="/"
+        ><img src="@/assets/logo.png" alt="Logo de la aplicación VotUCO"
+      /></a>
+    </div>
+    <div>
+      <LogInEmailPass />
+    </div>
+    <div id="buttons-container">
+      <a :href="googleURL()"
+        ><el-button type="info" plain>
+          <el-image
+            style="width: 25px; height: 25px"
+            src="https://jesusescribano.net/google.png"
+            fit="scale-down"
+          />Acceder con Google</el-button
+        ></a
+      >
+      <a :v-on:click="googleURL()"
+        ><el-button type="info" plain>
+          <el-image
+            style="width: 25px; height: 25px"
+            src="https://jesusescribano.net/uco.png"
+            fit="scale-down"
+          />Universidad de Córdoba</el-button
+        ></a
+      >
+    </div>
+    <div id="register-button-container">
+      <el-button
+        type="info"
+        href="/register"
+        tag="a"
+        rel="noopener noreferrer"
+        style="width: 100px; height: 50px"
+        >Registrarse</el-button
+      >
+    </div>
+  </el-space>
 </template>
 
 <script>
 import LogInEmailPass from "@/components/LogInEmailPass.vue";
-import SocialLoginButton from "@/components/SocialLoginButton.vue";
 export default {
   name: "LoginView",
   components: {
     LogInEmailPass,
-    SocialLoginButton,
+  },
+  setup() {
+    function googleURL() {
+      return `${process.env.VUE_APP_BACK_URL}/api/v1/user/google`;
+    }
+    return {
+      googleURL,
+    };
   },
 };
 </script>
 
 <style scoped>
-.social-button {
-  display: inline;
-  width: 25vh;
-  height: 4vw;
-  margin: 4vw;
+#login-logo img {
+  height: 15vw;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+#register-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#buttons-container a {
+  margin: 7px;
 }
 
 #buttons-container {
+  margin: 15px;
+}
+
+#form-container {
   display: flex;
-  align-items: center;
   justify-content: center;
-}
-
-#login-logo {
-  display: flex;
-  height: 10vw;
-  justify-content: center;
-  margin-top: 5vw;
-  margin-bottom: 1vw;
-}
-
-#login-logo img {
-  height: 15vw;
-}
-
-@media (max-width: 600px) {
 }
 </style>
