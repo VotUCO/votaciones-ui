@@ -39,6 +39,12 @@
           <el-option label="Otro" value="femenino" />
         </el-select>
       </el-form-item>
+      <el-form-item label="Rol" required>
+        <el-select v-model="form.rol">
+          <el-option label="Admin" value="admin" />
+          <el-option label="User" value="user" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="Fecha de Nacimiento" required>
         <el-date-picker
           v-model="form.birthDate"
@@ -50,7 +56,7 @@
       <div id="form-button">
         <el-form-item>
           <el-button type="primary" size="large" @click="submitRegister"
-            >Registrar</el-button
+            >Editar</el-button
           >
         </el-form-item>
       </div>
@@ -95,6 +101,7 @@ export default {
             year: "numeric",
           })
           .replace(/\//g, "-"),
+        rol: form.rol,
       };
       try {
         const response = await axios.post(
