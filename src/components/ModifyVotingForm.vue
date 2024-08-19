@@ -49,7 +49,7 @@
     <div id="create-votation-button">
       <el-form-item>
         <el-button type="primary" @click="submitForm(ruleFormRef)">
-          Crear
+          Modificar
         </el-button>
       </el-form-item>
     </div>
@@ -60,18 +60,48 @@
 import { reactive, ref } from "vue";
 import "../assets/css/mains.css";
 import axios from "axios";
+import { useRoute } from "vue-router";
 
 export default {
-  name: "CreateVotationForm",
-  setup() {
+  name: "ModifyVotingForm",
+  async setup() {
+    // eslint-disable-next-line
+    const route = useRoute();
     const ruleFormRef = ref();
+    let voting = null;
+    let options = null;
+    try {
+      const response = await axios.get(
+        `${process.env.VUE_APP_BACK_URL}/api/v1/voting/id?id=${route.query.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken()}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const options_response = await axios.get(
+        `${process.env.VUE_APP_BACK_URL}/api/v1/voting/options?id=${route.query.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken()}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      voting = response.data;
+      options = options_response.data.options;
+    } catch (error) {
+      console.log(error);
+    }
+
     const ruleForm = reactive({
-      name: null,
-      winners: null,
-      votingSystem: null,
-      options: ["", ""],
-      initDate: null,
-      finalDate: null,
+      name: voting.name,
+      winners: voting.winners,
+      votingSystem: voting.voting_system,
+      options: options,
+      initDate: new Date(voting.start_date),
+      finalDate: new Date(voting.end_date),
     });
     const rules = reactive({
       name: [
@@ -143,61 +173,43 @@ export default {
       }
     }
 
+    /* eslint-disable */
     async function submitForm(formEl) {
-      if (!formEl) {
-        console.log("inválido");
-      }
-      await formEl.validate(async (valid, fields) => {
-        if (valid) {
-          try {
-            const payload = {
-              name: ruleForm.name,
-              state: "draft",
-              winners: ruleForm.winners,
-              voting_system: ruleForm.votingSystem,
-              privacy: "False",
-              start_date: ruleForm.initDate.toLocaleDateString("es-ES", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              }),
-              end_date: ruleForm.finalDate.toLocaleDateString("es-ES", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              }),
-              options: JSON.stringify(ruleForm.options),
-            };
-            const response = await axios.post(
-              `${process.env.VUE_APP_BACK_URL}/api/v1/voting/create`,
-              payload,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${accessToken()}`,
-                },
-              }
-            );
-            if (response.status == 200) {
-              window.location.replace("/");
-            }
-          } catch (error) {
-            if (error.response) {
-              if (error.response.status == 401) {
-                localStorage.setItem("accessToken", "null");
-              }
-            }
-          }
-        } else {
-          return fields;
+      const payload = {
+        id: route.query.id,
+        name: ruleForm.name,
+        state: "draft",
+        winners: ruleForm.winners,
+        voting_system: ruleForm.votingSystem,
+        privacy: "False",
+        start_date: ruleForm.initDate.toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+        end_date: ruleForm.finalDate.toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+        options: JSON.stringify(ruleForm.options),
+      };
+      const response = await axios.put(
+        `${process.env.VUE_APP_BACK_URL}/api/v1/voting/update`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken()}`,
+          },
         }
-      });
+      );
     }
     function printChanges() {
       console.log(ruleForm.options);
