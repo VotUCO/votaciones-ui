@@ -1,5 +1,5 @@
 <template>
-  <RegisterForm :give_email="email" />
+  <RegisterForm />
 </template>
 
 <script>
@@ -11,7 +11,7 @@ export default {
     RegisterForm,
   },
   setup() {
-    const email = this.$route.query.email;
+    const email = "";
 
     return {
       email,

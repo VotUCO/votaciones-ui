@@ -4,13 +4,9 @@
 </template>
 
 <script>
-import ScoringOptions from "@/components/ScoringOptions.vue";
-
 export default {
   name: "VotingView",
-  components: {
-    ScoringOptions,
-  },
+  components: {},
 };
 </script>
 

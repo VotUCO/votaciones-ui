@@ -1,6 +1,5 @@
 <template>
   <div class="votes-view">
-    <p>Renderizando algo de contenido</p>
     <PublicVotes />
     <PrivateVotes />
   </div>
