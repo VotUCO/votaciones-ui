@@ -1,17 +1,20 @@
 <template>
-  <h1>Nueva Votación</h1>
+  <h1>Modificar Votación</h1>
   <div id="vote-form">
-    <CreateVotationForm />
+    <Suspense>
+      <ModifyVotingForm />
+    </Suspense>
   </div>
 </template>
 
 <script>
-import CreateVotationForm from "@/components/CreateVotationForm.vue";
+import ModifyVotingForm from "@/components/ModifyVotingForm.vue";
 export default {
-  name: "CreateVotationView",
+  name: "ModifyVotationView",
   components: {
-    CreateVotationForm,
+    ModifyVotingForm,
   },
+  setup() {},
 };
 </script>
 
@@ -24,4 +27,3 @@ h1 {
   justify-content: center;
 }
 </style>
->
