@@ -5,18 +5,22 @@ import { createStore } from "vuex";
 export default createStore({
   state: {
     logged: false,
-    token: null,
+    accessToken: null,
+    refreshToken: null,
   },
   getters: {
-    getToken(state){
-      return state.token;
+    getRefreshToken(state){
+      return state.refreshToken;
     },
     getLogged(state){
       return state.logged;
+    },
+    getAccessToken(state){
+      return state.accessToken;
     }
   },
   mutations: {
-    setToken(state, token){ 
+    setRefreshToken(state, token){ 
       state.token = token;
       return state.token;
     },
@@ -24,6 +28,10 @@ export default createStore({
       state.logged = value;
       return state.logged;
     },
+    setAccessToken(state, value){
+      state.accessToken = value;
+      return state.accessToken;
+    }
   },
   actions: {},
   modules: {},

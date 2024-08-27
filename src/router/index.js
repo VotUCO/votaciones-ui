@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import VotesView from "../views/VotesView.vue";
-import VotingView from "../views/VotingView.vue";
-import CreateVotationView from "../views/CreateVotationView.vue";
+import HomeView from "@/views/HomeView.vue";
+import VotesView from "@/views/VotesView.vue";
+import VotingView from "@/views/VotingView.vue";
+import RegisterUserView from "@/views/RegisterUserView.vue";
+import CreateVotationView from "@/views/CreateVotationView.vue";
+import LogInView from "@/views/LogInView.vue";
+//import CreateVotationView from "../views/CreateVotationView.vue";
 
 const routes = [
   {
@@ -10,17 +13,17 @@ const routes = [
     name: "home",
     component: HomeView,
   },
+  //{
+  //  path: "/about",
+  //  name: "about",
+  // route level code-splitting
+  // this generates a separate chunk (about.[hash].js) for this route
+  // which is lazy-loaded when the route is visited.
+  //  component: () =>
+  //    import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+  //},
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
-  },
-  {
-    path: "/votes",
+    path: "/votes2",
     name: "votes",
     component: VotesView,
   },
@@ -33,6 +36,19 @@ const routes = [
     path: "/createVote",
     name: "createVote",
     component: CreateVotationView,
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: LogInView,
+    meta: {
+      hideNavbar: true,
+    },
+  },
+  {
+    path: "/register2",
+    name: "register",
+    component: RegisterUserView,
   },
 ];
 
