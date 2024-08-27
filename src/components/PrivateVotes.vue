@@ -15,8 +15,12 @@
 
 <script>
 import VotingCard from "./VotingCard.vue";
+import "../assets/css/mains.css";
+import "../assets/css/header.css";
+import "../assets/css/votes.css";
+
 export default {
-  name: "PublicVotes",
+  name: "PrivateVotes",
   setup() {
     const number = 0;
     const votaciones = [

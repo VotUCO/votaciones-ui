@@ -15,18 +15,32 @@
 
 <script>
 import VotingCard from "./VotingCard.vue";
+import "../assets/css/mains.css";
+import "../assets/css/header.css";
+import "../assets/css/votes.css";
+import axios from "axios";
+
 export default {
   name: "PublicVotes",
-  setup() {
+  async setup() {
     const number = 0;
-    const votaciones = [
+
+    function accessToken() {
+      console.log(localStorage.getItem("accessToken"));
+      return localStorage.getItem("accessToken");
+    }
+
+    const response = await axios.get(
+      `${process.env.VUE_APP_BACK_URL}/api/v1/voting/public`,
       {
-        id: 0,
-        name: "Elecciones Consejo de Gobierno",
-        type: "1entren",
-        votingSystem: "scoring",
-      },
-    ];
+        headers: {
+          // eslint-disable-next-line no-undef
+          Authorization: `Bearer ${accessToken()}`,
+        },
+      }
+    );
+
+    const votaciones = response.data;
     return { number, votaciones };
   },
   components: { VotingCard },
