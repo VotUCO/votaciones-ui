@@ -9,6 +9,9 @@
 </template>
 
 <script>
+import "../assets/css/mains.css";
+import "../assets/css/header.css";
+import "../assets/css/votes.css";
 export default {
   name: "VotingCard",
   props: {
